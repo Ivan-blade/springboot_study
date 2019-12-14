@@ -3,11 +3,45 @@
         ```
             server.port = 8888
         ```
+    + 对于如果想要针对不同场景使用不同的properties文件(比如存在以下三个配置文件)
+        + application.properties
+        + application-dev.properties
+        + application-prod.properties
+        ```
+            如果进行配置，系统会默认选择第一个配置文件
+            如果想要指定第二个配置文件则需要在application.properties文件中加入：spring.profiles.active = dev
+            同理指定为第三个配置文件：spring.profiles.active = prod
+        ```
     + application.yml
         ```
             通过缩进表示嵌套关系，冒号后如果有值需要加空格
             server:
                 port: 8888
+        ```
+    + 如果想在不同场景下使用不同的yml配置
+        + 在yml文件中使用---表示不同的配置区块
+        ```
+            server:
+            port: 8080
+            spring:
+            profiles:
+                active: prod
+
+            ---
+            server:
+            port: 8081
+            spring:
+            profiles: dev
+
+            ---
+            server:
+            port: 8082
+            spring:
+            profiles: prod
+        ```
+        + 或者使用终端命令启动时加入配置
+        ```
+            --spring.profiles.active = prod
         ```
     + 以上两者都可以为类的对象赋值但是类文件需要两个注解
         ```
@@ -27,7 +61,20 @@
                     - xxx
                 map: {key1: 1,key2: 2} 
         ```
+    + 当内容分布在不同文件中时使用@ProperySource指定文件与@ConfigurationProperties配合使用
+        ```
+            @ProperySource(value = {classpath: xxx.properties})
+        ```
+    + 使用xml配置项目
+        + idea中新建springconfig类型的xml文件编辑内容，通过bean的id寻找方法，class寻找类
+        + ImportResource(locations = {"classpath: xxx.xml"})
+        + 或者不用上面的注释，创建配置类完成xml配置导入，配置类标识@Configuration，通过@Bean标识与xml中id相对应的方法
+
 + 启动方式
+    + idea运行程序时注意
+        ```
+            如果是module创建多个项目很可能在运行项目时启动路径一直默认为第一个项目路径，需要在运行配置的working directory中写入:$MODULE_DIR$
+        ```
     + 编译器内run
     + 在项目文件夹下
         ```
